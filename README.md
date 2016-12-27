@@ -14,7 +14,15 @@ One need to send the post request to the
  - Content-Type = "application/x-www-form-urlencoded"
  
 ### Request/input Data(Body)
-jsonData = <valid-JSON>
+jsonData = VALID_JSON
+
+#### Note:
+- valid json should not have validtion rules (any regular expression)
+- key and value both should be in double quotes, including numbers.
+eg. {
+    "x": "100",
+    "y": "-50"
+}
 
 ### Response Header
 - Content-Type= "image/png" 
