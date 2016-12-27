@@ -622,7 +622,7 @@
     **/
     public function decode($jsonString = '') {
       
-      if(0) {
+      /*if(0) {
         $jsonString = '{
           "id": "488019c0-27a9-450e-bc4c-19fb49cbfbc7",
           "name": "ashwini-nfs-iscsi",
@@ -20873,6 +20873,7 @@
           }
         }';
       }
+      */
     
 
      /*$jsonString = '{
@@ -26630,27 +26631,31 @@
         }
       }// end of foreach
 
-      /* adjust size of cells */
-      $this->graphAutoLayout();
+      try {
 
-      /* draw connection lines */
-      $this->drawConnectionLines($graph, $templateModel['services']);
+          /* adjust size of cells */
+          $this->graphAutoLayout();
 
-      /* draw labels for each cell*/
-      $this->drawLabels($graph);
+          /* draw connection lines */
+          $this->drawConnectionLines($graph, $templateModel['services']);
+
+          /* draw labels for each cell*/
+          $this->drawLabels($graph);
 
 
-      $this->model->endUpdate();
-      $this->graph->view->scale =1;
-      $image = $this->graph->createImage(null, "#FFFFFF"); 
+          $this->model->endUpdate();
+          $this->graph->view->scale =1;
+          $image = $this->graph->createImage(null, "#FFFFFF"); 
 
-      header("Content-Type: image/png");  
-      echo mxUtils::encodeImage($image);    
-      // $enc = new mxCodec();
-      // $xmlNode = $enc->encode($model);
-      
-      // echo str_replace("\n", "&#xa;", $xmlNode->ownerDocument->saveXML($xmlNode));
-      //exit;        
+          header("Content-Type: image/png");  
+          echo mxUtils::encodeImage($image); 
+
+       } catch (Exception $e) {
+          $this->model->endUpdate();
+          $this->ServiceFactory->saveLog(encode_json($e));
+          throw($e);
+        }    
+       
     }
 }
 

@@ -25,4 +25,6 @@ else
 	echo 'Not valid input'; exit;
 }
 
+//$decodeObj->decode();
+
 ?>
