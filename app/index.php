@@ -8,16 +8,21 @@
 $ds = DIRECTORY_SEPARATOR;
 DEFINE('BASE_DIR', realpath(dirname(__FILE__)  . $ds . '..') . $ds);
 //DEFINE('IMAGE_PATH', 'http://staging.kumolus.com/assets');
-DEFINE('IMAGE_PATH', 'http://localhost/Icons');
+$protocol = strtolower(substr($_SERVER["SERVER_PROTOCOL"],0,5))=='https://'?'https://':'http://';
+DEFINE('IMAGE_PATH', $protocol.$_SERVER['HTTP_HOST'].'/mxgraphs-php/Icons');
 
 
 
 include_once(BASE_DIR.'app\modules\decoder\decode_process.php');
 $decodeObj = new DecodeProcess();
-//if(isset($_GET['imgData']))  {
-	//decode($_GET['imgData']);
-$decodeObj->decode();
-// } else {
-// 	echo 'Not valid input'; exit;
-// }
+
+if (isset($_POST['jsonData']))
+{	
+    $decodeObj->decode($_POST['jsonData']);
+}
+else
+{
+	echo 'Not valid input'; exit;
+}
+
 ?>

@@ -26581,6 +26581,7 @@
         }
       }';*/
 
+
       if ($this->service_factory->isJson($jsonString))
       {
         $templateModel = json_decode($jsonString, true);

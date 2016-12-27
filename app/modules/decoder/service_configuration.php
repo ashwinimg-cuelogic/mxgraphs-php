@@ -93,7 +93,7 @@ class serviceConfiguration {
     //hide the notices and warnings, show only fatel errors
     error_reporting(1);  
     try {
-      $serviceStyle = $this->serviceFactory->loadStyle($this->service);     
+      $serviceStyle = $this->serviceFactory->loadStyle($this->service);  
       foreach($this->serviceIdAndParentCell['parentcell'] as $parentCell) {
         $cell_key_val = $this->service['id'];
         if(array_key_exists($this->service['id'], $this->cells)) {
