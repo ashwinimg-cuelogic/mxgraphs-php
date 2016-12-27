@@ -1,4 +1,4 @@
-# mxgraphs-php
+# MXgraphs-php
 
 ## Synopsis
 
@@ -6,7 +6,15 @@ This is the mxgraphs algorthm in php. This script will take JSON data as input a
 
 ## Code Example
 
-One need to specify the JSON string as argument while running the script via command line.
+One need to send the post request to the 
 
-> php index.php {sample-json}
+> <protocol>://<host>/app/index.php
 
+### Request-Header
+ - Content-Type = "application/x-www-form-urlencoded"
+ 
+### Request/input Data(Body)
+jsonData = <valid-JSON>
+
+### Response Header
+- Content-Type= "image/png" 
