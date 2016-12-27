@@ -8,7 +8,7 @@ This is the mxgraphs algorthm in php. This script will take JSON data as input a
 
 One need to send the post request to the 
 
-> <protocol>://<host>/app/index.php
+> PROTOCOL://HOST/app/index.php
 
 ### Request-Header
  - Content-Type = "application/x-www-form-urlencoded"
