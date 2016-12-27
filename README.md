@@ -26,3 +26,13 @@ eg. {
 
 ### Response Header
 - Content-Type= "image/png" 
+
+## Upgradation Note:
+
+Core library file of mxgraphs-php located at mxgraphs-php\src\canvas\mxGdCanvas.php
+is changed on line 1401 for height(As final daigram will not have same width and height)
+
+### original:
+    > $height = round($clip->width + $clip->x) + 1;
+### changed to :
+    > $height = round($clip->height + $clip->y) + 1;
