@@ -1,6 +1,6 @@
 <?php
 
-include_once(BASE_DIR. 'app\factories\service.factory.php');
+include_once(BASE_DIR. 'app/factories/service.factory.php');
 include_once(BASE_DIR."src/model/mxGeometry.php");
 
 class serviceConfiguration {

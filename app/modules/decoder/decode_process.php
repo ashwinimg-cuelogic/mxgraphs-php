@@ -1,8 +1,8 @@
 <?php
   include_once(BASE_DIR."src/mxServer.php");
-  include_once(BASE_DIR. 'app\factories\service.factory.php');
-  include_once(BASE_DIR. 'app\modules\decoder\service_configuration.php');
-  include_once(BASE_DIR. 'app\modules\decoder\template_model.php');
+  include_once(BASE_DIR. 'app'.$ds.'factories'.$ds.'service.factory.php');
+  include_once(BASE_DIR. 'app'.$ds.'modules'.$ds.'decoder'.$ds.'service_configuration.php');
+  include_once(BASE_DIR. 'app'.$ds.'modules'.$ds.'decoder'.$ds.'template_model.php');
 
   // Uses a local font so that all examples work on all platforms. This can be
   // changed to vera on Mac or arial on Windows systems.

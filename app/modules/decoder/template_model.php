@@ -1,5 +1,5 @@
 <?php
-include_once(BASE_DIR. 'app\factories\service.factory.php');
+include_once(BASE_DIR. 'app/factories/service.factory.php');
 
 class TemplateModel {
   public $serviceFactory;
