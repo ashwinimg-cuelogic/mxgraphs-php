@@ -14,7 +14,7 @@ class TemplateModel {
   * @returns {Service} The top level service related to this interface ID
   */
   public function findParentServiceByInterfaceId ($services, $interface_id) {
-    return array_filter($services, function($service) use($interface_id) {  
+    return array_filter($services, function($service) use($interface_id) { 
       return !$service['internal'] && $this->serviceFactory->getInterfaceById($service, $interface_id);
     });
   }

@@ -148,7 +148,8 @@ class ServiceFactory {
   }
 
   public function getInterfaceById($service, $interfaceId) {
-    return array_filter($service['interfaces'], function($intf) use($interfaceId){
+    return array_filter($service['additional_properties']['interfaces'], function($intf) use($interfaceId){
+      $this->saveLog("-------service-interface=".$intf['id']. '  intf-id='.$interfaceId);
       return $intf['id'] === $interfaceId;
     });
   }

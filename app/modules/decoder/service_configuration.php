@@ -36,7 +36,8 @@ class serviceConfiguration {
 
   /* get service Id and service parent cell, default is vpc
   */  
-  private function getServiceIdAndParentCell() {        
+  private function getServiceIdAndParentCell() {    
+    $this->serviceFactory->saveLog("****************type=".$this->service["additional_properties"]['service_type'] ." service=".$this->service["id"]." parent_id = " . $this->service['additional_properties']['parent_id']);    
     if (isset($this->service['additional_properties']['parent_id']) && is_array($this->service['additional_properties']['parent_id'])) {
       foreach($this->service['additional_properties']['parent_id'] as $parent) {
         $parentcell[] = $this->getCellIfExist($parent);
@@ -93,7 +94,7 @@ class serviceConfiguration {
     //hide the notices and warnings, show only fatel errors
     error_reporting(1);  
     try {
-      $serviceStyle = $this->serviceFactory->loadStyle($this->service);  
+      $serviceStyle = $this->serviceFactory->loadStyle($this->service); 
       foreach($this->serviceIdAndParentCell['parentcell'] as $parentCell) {
         $cell_key_val = $this->service['id'];
         if(array_key_exists($this->service['id'], $this->cells)) {
@@ -135,7 +136,7 @@ class serviceConfiguration {
 
   public function setServiceType() {
     if (
-      $this->service['type'] && 
+      isset($this->service['type']) && 
       strpos($this->service['type'], 'RouteTable') !== -1 && 
       array_filter($this->service['properties'], function($prop
     ) {
