@@ -266,8 +266,10 @@
         $v_cols = 1;
         $vpc_child_index = 1;
         $vpc_geo = $vpc->getGeometry();
-
-
+        
+        $vpc_geo->x = 30;
+        $vpc_geo->y = 30;
+        
         $vpc_next_child_pos = array(
           "x"      => 18,
           "y"      => 22,
@@ -629,7 +631,7 @@
     **/
     public function decode($jsonString = '') {
 
-      $this->service_factory->saveLog("Image processing started for -". isset($templateModel['id']) ? $templateModel['id']: '');
+//      $this->service_factory->saveLog("Image processing started for -". isset($templateModel['id']) ? $templateModel['id']: '');
 
       if ($this->service_factory->isJson($jsonString))
       {
