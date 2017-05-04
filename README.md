@@ -23,6 +23,9 @@ eg. {
     "x": "100",
     "y": "-50"
 }
+- PHP version should be 5.6 or greather
+- PHP GD liberary (php5.6-gd - for PHP 5.6) is required to install into ubuntu use: 
+> sudo apt-get install php5.6-gd
 
 ### Response Header
 - Content-Type= "image/png" 
