@@ -1397,8 +1397,8 @@ class mxGdCanvas
 	 	// $y = round($clip->y);
 	 	// $width = round($clip->width - $x + $clip->x) + 1;
 	 	// $height = round($clip->height - $y + $clip->y) + 1;
-	 	$width = round($clip->width + $clip->x) + 1;
-	 	$height = round($clip->height + $clip->y) + 1;
+	 	$width = round($clip->width + $clip->x) + 30;
+	 	$height = round($clip->height + $clip->y) + 30;
 	 	
 	 	$canvas = new mxGdCanvas($width, $height, $graph->view->scale, $bg);
 	 	
