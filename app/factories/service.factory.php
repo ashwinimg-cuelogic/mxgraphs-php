@@ -10,7 +10,7 @@ class ServiceFactory {
   );
 
   private $parent_styles = array(
-    'vpc'              => "strokeColor=#CCC;dashed=0;fillColor=none;strokeWidth=2;",
+    'vpc'              => "strokeColor=#BBBBBB;dashed=0;fillColor=none;strokeWidth=2;",
     'availabilityzone' => "strokeColor=#7FBDF0;dashed=0;strokeWidth=2;",
     'subnet'           => "strokeColor=#D9CE93;dashed=1;strokeWidth=1;",
     'subnetgroup'      => "strokeColor=#BFB57C;dashed=0;strokeWidth=2;",
@@ -67,12 +67,22 @@ class ServiceFactory {
     })) {
       $serviceObjectSVGPath .= "-main";
     }
-    else if ($service['type'] && strpos(strtolower($service['type']), 'loadbalancer'))
+    else if ($service['type'] && strpos(strtolower($service['type']), 'loadbalancer') > -1)
     {
-      $lbScheme = array_filter($service['properties'], function($prop) {
+      $lbSchemes = array_filter($service['properties'], function($prop) {
         return $prop['name'] === 'scheme';
       });
-      if ($lbScheme && $lbScheme['value'] !== 'internal') {
+
+      foreach ($lbSchemes as $lbS)
+      {
+        $lbScheme = $lbS;
+      }
+
+
+      $this->saveLog('$lbScheme');
+      $this->saveLog(json_encode($lbScheme));
+      $this->saveLog(json_encode($lbScheme['value']));
+      if ($lbScheme && $lbScheme['value'] == 'internet-facing') {
         $serviceObjectSVGPath .= "-external";
       }
     }
@@ -87,14 +97,16 @@ class ServiceFactory {
       {
         $dbEngine = $engins;
       }
-
+      // $this->saveLog('$dbEngine');
+      // $this->saveLog(json_encode($dbEngine));
+      // $this->saveLog(strpos(strtolower($dbEngine['value']), 'oracle'));
       if ($dbEngine)
       {
-        if (strpos(strtolower($dbEngine['value']), 'oracle'))
+        if (strpos(strtolower($dbEngine['value']), 'oracle') > -1)
         {
           $serviceObjectSVGPath .= "-oracle";
         }
-        else if (strpos(strtolower($dbEngine['value']), 'sqlserver'))
+        else if (strpos(strtolower($dbEngine['value']), 'sqlserver') > -1)
         {
           $serviceObjectSVGPath .= "-sqlserver-ee";
         }
@@ -104,7 +116,7 @@ class ServiceFactory {
         }
       }
       else {
-        $serviceObjectSVGPath .= "-" . 'provider'; // change to $provider investigate from where $provider is set
+        $serviceObjectSVGPath .= "-" . 'aws'; // change to $provider investigate from where $provider is set
       }
     }
     else if(strtolower($service['additional_properties']['service_type']) === "server" || strtolower($service['additional_properties']['service_type']) === "autoscalingconfiguration")
@@ -157,7 +169,7 @@ class ServiceFactory {
   }
 
   public function getInterfaceById($service, $interfaceId) {
-    return array_filter($service['additional_properties']['interfaces'], function($intf) use($interfaceId){
+    return array_filter($service['interfaces'], function($intf) use($interfaceId){
       $this->saveLog("-------service-interface=".$intf['id']. '  intf-id='.$interfaceId);
       return $intf['id'] === $interfaceId;
     });
@@ -244,7 +256,7 @@ class ServiceFactory {
 
   public function saveLog($data) {
     try {
-      $file = fopen('logs.txt', 'a+');
+      $file = fopen('logs1.txt', 'a+');
       fwrite($file, "\n".$data);
       fclose($file);
     } catch(Exception $e) {
@@ -255,7 +267,7 @@ class ServiceFactory {
 
   public function clearLog() {
     try {
-      $file = fopen('logs.txt', 'w');
+      $file = fopen('logs1.txt', 'w');
       fwrite($file, "");
       fclose($file);
     } catch(Exception $e) {
@@ -266,15 +278,15 @@ class ServiceFactory {
 
   public function getStrokeColor($sourceService) {
     $strokeColors = array(
-      "internetgateway" => "#589cc4",
-      "autoscaling" => "#6fdbc2",
-      "subnet"=>"#ffa3a3"
+      "internetgateway" => "#8e8edb",
+      "autoscaling" => "#8FE0CE",
+      "subnet"=>"#f9bfc0"
     );
     if (array_key_exists(strtolower($sourceService), $strokeColors))
     {
       return $strokeColors[strtolower($sourceService)];
     }
-    return "#7FBDF0";
+    return "#70BBCD";
   }
 
   public function isJson($string) {
