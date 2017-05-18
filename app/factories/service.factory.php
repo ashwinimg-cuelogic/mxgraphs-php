@@ -51,9 +51,16 @@ class ServiceFactory {
   public function loadStyle($service) {    
     $style = '';
     $serviceObjectSVGPath = $this->getImage($service['additional_properties']['generic_type']);
+    // $this->saveLog(json_encode($service) . "jhfhj");
+    // $this->saveLog($service['type']);
+    // $this->saveLog(strpos(strtolower($service['type']), 'routetable'));
+    
+    // $this->saveLog(json_encode(service['properties']));
+
+
     if (
       $service['type'] && 
-      strpos($service['type'], 'RouteTable') !== -1 && 
+      strpos(strtolower($service['type']), 'routetable') !== -1 && 
       array_filter($service['properties'], function($prop
     ) {
       return $prop['name'] === "main" && $prop['value'] == true;
@@ -116,7 +123,8 @@ class ServiceFactory {
     * Added shape= image referring the URL = https://github.com/jbeard4/mxgraph/blob/master/php/examples/embedimage.html
     */
 
-    $style = $this->isParent($service) ? "rounded=2;swimlane;whiteSpace=wrap;fillColor=none;" : "shape=image;image=" . IMAGE_PATH . "/" . $serviceObjectSVGPath . ".png;"; 
+    $style = $this->isParent($service) ? "rounded=2;swimlane;whiteSpace=wrap;fillColor=none;" : "shape=image;image=" . IMAGE_PATH . "/" . $serviceObjectSVGPath . ".png;";
+    // $this->saveLog($style); 
 
     if ($this->isParent($service) && isset($this->parent_styles[strtolower($service['additional_properties']['service_type'])]))
     {
@@ -283,6 +291,15 @@ class ServiceFactory {
     $finalDim['h'] = $finalDim['h'] + 20;
     $finalDim['w'] = $finalDim['w'] + 20 + $this->spacing_x;
     return $finalDim;
+  }
+
+  public function setServiceType($service)
+  {
+      if(isset($service['additional_properties']['generic_type']) && !isset($service['type']))
+      {
+        $service['type'] = $service['additional_properties']['generic_type'];
+      }
+      return $service;
   }
 }
 

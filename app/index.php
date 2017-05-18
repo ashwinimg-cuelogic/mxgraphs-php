@@ -15,15 +15,15 @@ DEFINE('IMAGE_PATH', $protocol.$_SERVER['HTTP_HOST'].'/Icons');
 include_once(BASE_DIR.'app'.$ds.'modules'.$ds.'decoder'.$ds.'decode_process.php');
 $decodeObj = new DecodeProcess();
 
-if (isset($_POST['jsonData']))
-{	
-    $decodeObj->decode($_POST['jsonData']);
-}
-else  
-{
-	echo 'Not valid input'; exit;
-}
+// if (isset($_POST['jsonData']))
+// {	
+//     $decodeObj->decode($_POST['jsonData']);
+// }
+// else  
+// {
+// 	echo 'Not valid input'; exit;
+// }
  
-//$decodeObj->decode();
+$decodeObj->decode();
 
 ?>
