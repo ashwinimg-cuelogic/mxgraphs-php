@@ -92,7 +92,7 @@ class serviceConfiguration {
 
   public function drawCell() {    
     //hide the notices and warnings, show only fatel errors
-    error_reporting(-1);  
+    error_reporting(1);  
     try {
       $serviceStyle = $this->serviceFactory->loadStyle($this->service); 
       foreach($this->serviceIdAndParentCell['parentcell'] as $parentCell) {

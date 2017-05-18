@@ -112,10 +112,11 @@ class ServiceFactory {
       $check_win = array_filter($service['properties'], function($prop) {
         return $prop['name'] === 'platform' && $prop['value'] === "windows";
       });
+      
       if ($check_win) {
-        $serviceObjectSVGPath .= "-windows" . 'provider';
+        $serviceObjectSVGPath .= "-azure";
       } else {
-        $serviceObjectSVGPath .= "-" . 'provider';
+        $serviceObjectSVGPath .= "-" . 'aws';
       }
     }
 
@@ -124,7 +125,7 @@ class ServiceFactory {
     */
 
     $style = $this->isParent($service) ? "rounded=2;swimlane;whiteSpace=wrap;fillColor=none;" : "shape=image;image=" . IMAGE_PATH . "/" . $serviceObjectSVGPath . ".png;";
-    // $this->saveLog($style); 
+    $this->saveLog($style); 
 
     if ($this->isParent($service) && isset($this->parent_styles[strtolower($service['additional_properties']['service_type'])]))
     {
