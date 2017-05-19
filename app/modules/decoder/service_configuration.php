@@ -37,7 +37,7 @@ class serviceConfiguration {
   /* get service Id and service parent cell, default is vpc
   */  
   private function getServiceIdAndParentCell() {    
-    $this->serviceFactory->saveLog("****************type=".$this->service["additional_properties"]['service_type'] ." service=".$this->service["id"]." parent_id = " . $this->service['additional_properties']['parent_id']);    
+    //$this->serviceFactory->saveLog("****************type=".$this->service["additional_properties"]['service_type'] ." service=".$this->service["id"]." parent_id = " . $this->service['additional_properties']['parent_id']);    
     if (isset($this->service['additional_properties']['parent_id']) && is_array($this->service['additional_properties']['parent_id'])) {
       foreach($this->service['additional_properties']['parent_id'] as $parent) {
         $parentcell[] = $this->getCellIfExist($parent);

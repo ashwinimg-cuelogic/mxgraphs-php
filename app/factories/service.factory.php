@@ -79,9 +79,9 @@ class ServiceFactory {
       }
 
 
-      $this->saveLog('$lbScheme');
-      $this->saveLog(json_encode($lbScheme));
-      $this->saveLog(json_encode($lbScheme['value']));
+      // $this->saveLog('$lbScheme');
+      // $this->saveLog(json_encode($lbScheme));
+      // $this->saveLog(json_encode($lbScheme['value']));
       if ($lbScheme && $lbScheme['value'] == 'internet-facing') {
         $serviceObjectSVGPath .= "-external";
       }
@@ -137,7 +137,7 @@ class ServiceFactory {
     */
 
     $style = $this->isParent($service) ? "rounded=2;swimlane;whiteSpace=wrap;fillColor=none;" : "shape=image;image=" . IMAGE_PATH . "/" . $serviceObjectSVGPath . ".png;";
-    $this->saveLog($style); 
+    //$this->saveLog($style); 
 
     if ($this->isParent($service) && isset($this->parent_styles[strtolower($service['additional_properties']['service_type'])]))
     {
@@ -170,7 +170,7 @@ class ServiceFactory {
 
   public function getInterfaceById($service, $interfaceId) {
     return array_filter($service['interfaces'], function($intf) use($interfaceId){
-      $this->saveLog("-------service-interface=".$intf['id']. '  intf-id='.$interfaceId);
+      //$this->saveLog("-------service-interface=".$intf['id']. '  intf-id='.$interfaceId);
       return $intf['id'] === $interfaceId;
     });
   }
@@ -195,6 +195,8 @@ class ServiceFactory {
       return;
     }
 
+    $this->saveLog("parent cell service type". $parentCell->value['additional_properties']['service_type']);
+
     foreach($serviceConnectorMap[strtolower($parentCell->value['additional_properties']['service_type'])] as $connectorType => $direction)
     {
       $vpcIGAttachProp =array_filter($parentCell->parent->value['properties'], function($prop) {
@@ -218,6 +220,7 @@ class ServiceFactory {
           "addInterface"              =>function(){},
           'provides'                  =>array(array('type'=>''))
           );
+        $this->saveLog('service_type'.$connectorType);
 
         $port = $graph->insertVertex(
           $parentCell, null, $connVal, 0, 0, 15, 15,

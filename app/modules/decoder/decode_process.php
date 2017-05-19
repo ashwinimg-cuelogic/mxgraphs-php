@@ -36,6 +36,7 @@
       $s_child_index = $objRC["cindex"];
       $servicesList = $service->children;
       $threshold = (ceil(sqrt(count($servicesList))) > $objRC['threshold']) ? ceil(sqrt(count($servicesList))) : $objRC['threshold'];
+      //$this->service_factory->saveLog($threshold)
       $rows = $objRC['rows'];
       $cols = $objRC['cols'];
       $maxlist = array();
@@ -50,10 +51,10 @@
         {   
           if ($subnet_child->value['additional_properties']['generic_type'] != 'connectors')
           {
-            $thr_diff = $s_child_index % $threshold;
+            $thr_diff = $s_child_index % $threshold;  
 
             $size_ = strtolower($subnet_child->value['additional_properties']['service_type']) == 'db' ? $subnet_child->geometry->width : $subnet_child->geometry->width + 10; 
-            if ($prevCell[$key-1]) {
+            if ($prevCell[$key-1] && $x>0) {
               $prev_cell_geo =  $prevCell[$key-1]->getGeometry();
               $x =  $this->service_factory->spacing_x + $prev_cell_geo->x + $prev_cell_geo->width;
             } else {
@@ -63,7 +64,7 @@
             $space_y = $this->service_factory->spacing_y + $this->service_factory->spacing_y * ($rows - 1);
             $y = $space_y + $size_ * ($rows - 1);
 
-            $_dim = (strtolower($subnet_child->value['additional_properties']['service_type']) == "autoscaling") ? 100 : $subnet_child->geometry->width;
+            $_dim = (strtolower($subnet_child->value['additional_properties']['service_type']) == "autoscaling") ? 80 : $subnet_child->geometry->width;
             $y = (strtolower($subnet_child->value['additional_properties']['service_type']) == "autoscaling") ? ($y) : $y;
             $geometry = new mxGeometry($x, $y, $_dim, $_dim);
             $subnet_child->setGeometry($geometry);
@@ -77,7 +78,8 @@
               foreach($subnet_child->children as $child)
               {              
                 if (strtolower($child->value['additional_properties']['service_type']) == "autoscalingconfiguration") 
-                {
+                {                 
+                  $child->setGeometry(new mxGeometry(10, 20, $child->geometry->width, $child->geometry->height));
                   $autoscalingConfiguration = $child;
                   foreach($autoscalingConfiguration->value['properties'] as $property)
                   {
@@ -150,12 +152,13 @@
             $x += $size_;
 
             if ($s_child_index > 0 && $thr_diff == 0)
-            {
+            {             
               $rows += 1;
               $cols = 0;
               $x = 0;
               $maxThresholdInParent = true;
             }
+
 
             if ($s_child_index > 0)
             {
@@ -171,6 +174,7 @@
               $cols = $objRC['cols'];
               $x = 0;
             }
+            
           }
         };
       }
@@ -184,7 +188,7 @@
     }
 
     public function autoLayoutFixedDimChildren($main_parent_cell, $next_child_pos) {   
-      $this->service_factory->saveLog("subnet". count($main_parent_cell->children));
+      // $this->service_factory->saveLog("subnet". count($main_parent_cell->children));
       if (isset($main_parent_cell->children) && count($main_parent_cell->children) > 0) 
       {
           foreach($main_parent_cell->children as $subnet) {
@@ -416,7 +420,7 @@
             $sgrp_geo->width = $this->service_factory->last_child_dim * $cols + ($this->service_factory->spacing_x * $cols) + $this->service_factory->spacing_x;
             $sgrp_geo->height = $this->service_factory->last_child_dim * $rows + ($this->service_factory->spacing_y * $rows) + $this->service_factory->spacing_y;
             $sgrp_geo->x = $sgrp_next_child_pos['x'] - $sgrp_geo->width + 80;
-            $sgrp_geo->y = $sgrp_next_child_pos['y'];
+            $sgrp_geo->y = $sgrp_next_child_pos['y'] + 120;
             $sgrp_next_child_pos['y'] += $sgrp_geo->height + 22;
             $service->setGeometry($sgrp_geo);
             if ($vpc_geo->height < $sgrp_geo->y + $sgrp_geo->height)
@@ -450,12 +454,14 @@
         'subnet'           => ['routetable', 'loadbalancer']
       );
       $allCells = $this->graph->model->cells;
+
       foreach ($allCells as $key => $cell) {  
+        $this->service_factory->saveLog("inside foreach ". $cell->value['additional_properties']['service_type']);
        if ($cell->value && $cell->value['generic_type'] !== 'connectors' && in_array(strtolower($cell->value['additional_properties']['service_type']), $connectibleServices)) {
           $service = $cell->value;         
           $externalfacinginterfaces = $this->service_factory->getExternalFacingInterfaces($service['interfaces']);
 
-          $this->service_factory->saveLog(json_encode($externalfacinginterfaces));
+           $this->service_factory->saveLog($cell->value['additional_properties']['service_type']. " exterbal inf=". count($externalfacinginterfaces));
 
           foreach ($externalfacinginterfaces as $intf) {    
             if (in_array(
@@ -473,7 +479,7 @@
                 };
                 $this->service_factory->saveLog("connectores t1=");
                 $this->service_factory->saveLog($connection['interface_id']);
-                $this->service_factory->saveLog($connection['interface_id']);
+                $this->service_factory->saveLog("parent1". $t1['id']. " service-type=". $t1['additional_properties']['service_type']);
                 $this->service_factory->saveLog(" connectores t2=");
                 $this->service_factory->saveLog($connection['remote_interface_id']);
                 
@@ -481,6 +487,7 @@
                 foreach($this->template_model->findParentServiceByInterfaceId($services, $connection['remote_interface_id']) as $value) {
                   $t2 = $value;
                 } 
+                $this->service_factory->saveLog("parent2". $t2['id']. " service-type=". $t2['additional_properties']['service_type']);
               
                
                if ($t1 && $t2) {
@@ -488,38 +495,63 @@
                     return $modelCell->value && $modelCell->value['id'] == $t1['id'];
                   });
 
+                  $this->service_factory->saveLog("source count= ".count($sorceCells));
+
+
+
                   $targetCells = array_filter($this->graph->model->cells, function($modelCell)  use($t2){
                     return $modelCell->value && $modelCell->value['id'] == $t2['id'];
                   });
 
+                  $this->service_factory->saveLog("destination count= ". count($targetCells));
+
                   foreach($sorceCells as $sourceCell) {
+                    $this->service_factory->saveLog("inside 1 each");
                     foreach($targetCells as $targetCell) {
+                      $this->service_factory->saveLog("inside 2 each");
+
                       if (strtolower($targetCell->value['additional_properties']['service_type']) == 'loadbalancer') {
                         $tempCell = $targetCell;
                         $targetCell = $sourceCell;
                         $sourceCell = $tempCell;
                       }
 
+                      $this->service_factory->saveLog("sourcecell children = ". count($sourceCell->children));
+
+                      $this->service_factory->saveLog('target cell chirdre'. count($targetCell->children));
+
                       $sourceConnectors = array_filter($sourceCell->children, function($childCell) use($targetCell) {
-                        return 
-                        $childCell->value && 
+                        $this->service_factory->saveLog($childCell->value['service_type']. "=". $targetCell->value['additional_properties']['service_type']);
+                        return  $childCell->value && 
                         strtolower($childCell->value['generic_type']) == "connectors" &&
                         strtolower($childCell->value['service_type']) == strtolower($targetCell->value['additional_properties']['service_type']);
                       });
 
+                      $this->service_factory->saveLog("source onnectores count". count($sourceConnectors));
+
                       foreach($sourceConnectors as $s) {
                         $sourceConnector = $s;
                       }
+                      
 
                       $targetConnectors = array_filter($targetCell->children, function($childCell) use($sourceCell) {
-                        return 
-                        $childCell->value && 
+                        return  $childCell->value && 
                         strtolower($childCell->value['generic_type']) == "connectors" &&
                         strtolower($childCell->value['service_type']) == strtolower($sourceCell->value['additional_properties']['service_type']);
                       });
+
                       foreach($targetConnectors as $s) {
                         $targetConnector = $s;
                       }
+
+                      $this->service_factory->saveLog("destination onnectores count". count($targetConnectors));
+
+                      $this->service_factory->saveLog($sourceConnector->value['service_type']); 
+                      $this->service_factory->saveLog("-------------------"); 
+                                        
+                      $this->service_factory->saveLog($targetConnector->value['service_type']); 
+                                                    
+           
                       $edge = new mxCell(null, new mxGeometry(), "shape=connector;strokeColor=".$this->service_factory->getStrokeColor($sourceConnector->value['service_type']).";strokeWidth=3;edgeStyle=topToBottomEdgeStyle");
 
                       $edge->setId($connection['id']);
@@ -530,6 +562,7 @@
                     }
                   }
                 }
+                $this->service_factory->saveLog("---------------------------------------------------------------------------------------------");
               }
             }
           }
@@ -635,6 +668,10 @@
     **/
     public function decode($jsonString = '') {
 
+      try{
+
+
+
       //      $this->service_factory->saveLog("Image processing started for -". isset($templateModel['id']) ? $templateModel['id']: '');
 
       if ($this->service_factory->isJson($jsonString))
@@ -695,6 +732,10 @@
       }// end of foreach
 
      // exit;
+}catch(Exception $e){
+         $this->ServiceFactory->saveLog(encode_json($e));
+          throw($e);
+      }
 
       try {
 
@@ -723,6 +764,9 @@
           $this->ServiceFactory->saveLog(encode_json($e));
           throw($e);
         }    
+
+        
+
        
     }
 }
